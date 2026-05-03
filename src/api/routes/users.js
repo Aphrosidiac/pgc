@@ -20,22 +20,26 @@ router.get('/banned', (req, res) => {
 
 router.post('/ban', (req, res) => {
   const { telegram_user_id, reason } = req.body;
-  if (!telegram_user_id) return res.status(400).json({ error: 'telegram_user_id required' });
-  banUser(parseInt(telegram_user_id), null, null, reason || 'Banned from dashboard', req.user.username);
-  broadcast('moderation_action', { action: 'banned', user_id: telegram_user_id });
+  const uid = parseInt(telegram_user_id);
+  if (!uid || uid < 1) return res.status(400).json({ error: 'Valid telegram_user_id required' });
+  banUser(uid, null, null, reason || 'Banned from dashboard', req.user.username);
+  broadcast('moderation_action', { action: 'banned', user_id: uid });
   res.json({ ok: true });
 });
 
 router.post('/unban', (req, res) => {
   const { telegram_user_id } = req.body;
-  if (!telegram_user_id) return res.status(400).json({ error: 'telegram_user_id required' });
-  unbanUser(parseInt(telegram_user_id), req.user.username);
-  broadcast('moderation_action', { action: 'unbanned', user_id: telegram_user_id });
+  const uid = parseInt(telegram_user_id);
+  if (!uid || uid < 1) return res.status(400).json({ error: 'Valid telegram_user_id required' });
+  unbanUser(uid, req.user.username);
+  broadcast('moderation_action', { action: 'unbanned', user_id: uid });
   res.json({ ok: true });
 });
 
 router.get('/:id', (req, res) => {
-  const confessions = getUserConfessions(parseInt(req.params.id));
+  const id = parseInt(req.params.id);
+  if (!id || id < 1) return res.status(400).json({ error: 'Invalid ID' });
+  const confessions = getUserConfessions(id);
   res.json(confessions);
 });
 

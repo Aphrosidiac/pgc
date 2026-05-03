@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import config from '../../config.js';
 
 export function authMiddleware(req, res, next) {
-  const token = req.cookies?.token || req.headers.authorization?.replace('Bearer ', '') || req.query.token;
+  const token = req.cookies?.token || req.headers.authorization?.replace('Bearer ', '');
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
   try {

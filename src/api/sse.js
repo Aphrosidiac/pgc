@@ -13,6 +13,10 @@ export function sseHandler(req, res) {
 export function broadcast(event, data) {
   const payload = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
   for (const client of clients) {
-    client.write(payload);
+    try {
+      client.write(payload);
+    } catch {
+      clients.delete(client);
+    }
   }
 }

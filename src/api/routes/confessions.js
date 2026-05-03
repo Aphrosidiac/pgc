@@ -7,19 +7,25 @@ export default function confessionsRouter(bot) {
   const router = Router();
 
   router.get('/', (req, res) => {
-    const { status, page = 1, limit = 20, search = '' } = req.query;
-    const result = listConfessions(status, parseInt(page), parseInt(limit), search);
+    const { status, search = '' } = req.query;
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20));
+    const result = listConfessions(status, page, limit, search);
     res.json(result);
   });
 
   router.get('/:id', (req, res) => {
-    const confession = getConfession(parseInt(req.params.id));
+    const id = parseInt(req.params.id);
+    if (!id || id < 1) return res.status(400).json({ error: 'Invalid ID' });
+    const confession = getConfession(id);
     if (!confession) return res.status(404).json({ error: 'Not found' });
     res.json(confession);
   });
 
   router.post('/:id/approve', async (req, res) => {
-    const confession = getConfession(parseInt(req.params.id));
+    const id = parseInt(req.params.id);
+    if (!id || id < 1) return res.status(400).json({ error: 'Invalid ID' });
+    const confession = getConfession(id);
     if (!confession) return res.status(404).json({ error: 'Not found' });
     if (confession.status !== 'pending') return res.status(400).json({ error: 'Already reviewed' });
 
@@ -45,7 +51,9 @@ export default function confessionsRouter(bot) {
   });
 
   router.post('/:id/reject', (req, res) => {
-    const confession = getConfession(parseInt(req.params.id));
+    const id = parseInt(req.params.id);
+    if (!id || id < 1) return res.status(400).json({ error: 'Invalid ID' });
+    const confession = getConfession(id);
     if (!confession) return res.status(404).json({ error: 'Not found' });
     if (confession.status !== 'pending') return res.status(400).json({ error: 'Already reviewed' });
 

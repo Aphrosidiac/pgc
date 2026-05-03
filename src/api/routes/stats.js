@@ -8,7 +8,7 @@ router.get('/overview', (req, res) => {
 });
 
 router.get('/daily', (req, res) => {
-  const days = parseInt(req.query.days || '30');
+  const days = Math.min(365, Math.max(1, parseInt(req.query.days) || 30));
   res.json(getDailyStats(days));
 });
 

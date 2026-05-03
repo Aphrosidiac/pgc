@@ -1,8 +1,13 @@
 import config from '../../config.js';
 import { getConfession, approveConfession, rejectConfession, banUser } from '../../db/queries.js';
 
+function isAdmin(ctx) {
+  return config.ADMIN_IDS.includes(ctx.from?.id);
+}
+
 export function setupModerationHandler(bot, broadcast) {
   bot.callbackQuery(/^approve:(\d+)$/, async (ctx) => {
+    if (!isAdmin(ctx)) return ctx.answerCallbackQuery('Not authorized.');
     const id = parseInt(ctx.match[1]);
     const confession = getConfession(id);
     if (!confession) return ctx.answerCallbackQuery('Confession not found.');
@@ -37,6 +42,7 @@ export function setupModerationHandler(bot, broadcast) {
   });
 
   bot.callbackQuery(/^reject:(\d+)$/, async (ctx) => {
+    if (!isAdmin(ctx)) return ctx.answerCallbackQuery('Not authorized.');
     const id = parseInt(ctx.match[1]);
     const confession = getConfession(id);
     if (!confession) return ctx.answerCallbackQuery('Confession not found.');
@@ -59,6 +65,7 @@ export function setupModerationHandler(bot, broadcast) {
   });
 
   bot.callbackQuery(/^ban:(\d+)$/, async (ctx) => {
+    if (!isAdmin(ctx)) return ctx.answerCallbackQuery('Not authorized.');
     const id = parseInt(ctx.match[1]);
     const confession = getConfession(id);
     if (!confession) return ctx.answerCallbackQuery('Confession not found.');
