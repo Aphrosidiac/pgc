@@ -1,0 +1,21 @@
+{
+  "name": "pagoh-confess",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "dev:dashboard": "cd dashboard && npm run dev",
+    "build": "cd dashboard && npm run build",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^12.9.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "grammy": "^1.42.0",
+    "jsonwebtoken": "^9.0.3"
+  }
+}
