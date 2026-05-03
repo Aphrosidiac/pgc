@@ -1,4 +1,5 @@
 import config from '../../config.js';
+import { getSetting } from '../../db/queries.js';
 
 const cooldowns = new Map();
 
@@ -9,7 +10,7 @@ export function spamMiddleware(ctx, next) {
   const last = cooldowns.get(userId) || 0;
 
   if (now - last < config.COOLDOWN_MS) {
-    return ctx.reply('jangan spam pls');
+    return ctx.reply(getSetting('msg_spam') || 'jangan spam pls');
   }
 
   cooldowns.set(userId, now);

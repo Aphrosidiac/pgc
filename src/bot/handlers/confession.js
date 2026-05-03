@@ -2,12 +2,30 @@ import config from '../../config.js';
 import { createConfession, updateConfessionModMessage, getSetting, approveConfession } from '../../db/queries.js';
 import { moderationKeyboard } from '../keyboards.js';
 
+function renderTemplate(template, vars) {
+  let result = template;
+  for (const [key, val] of Object.entries(vars)) {
+    result = result.replaceAll(`{{${key}}}`, val);
+  }
+  return result;
+}
+
+function getChannelText(num, content) {
+  const fmt = getSetting('msg_channel_format') || '#{{number}}\n\n{{content}}';
+  return renderTemplate(fmt, { number: num, content });
+}
+
+function getPostedReply(num) {
+  const fmt = getSetting('msg_posted') || 'Your confession #{{number}} has been posted!';
+  return renderTemplate(fmt, { number: num });
+}
+
 export function setupConfessionHandler(bot, broadcast) {
   bot.on('message:text', async (ctx) => {
     if (ctx.chat.type !== 'private') return;
 
     if (getSetting('bot_active') === 'false') {
-      return ctx.reply('Confessions are currently paused. Please try again later.');
+      return ctx.reply(getSetting('msg_paused') || 'Confessions are currently paused.');
     }
 
     const user = ctx.from;
@@ -26,11 +44,11 @@ export function setupConfessionHandler(bot, broadcast) {
         console.error('Failed to send to mod group:', e.message);
       }
       broadcast('new_confession', { id, type: 'text', content: text, user_id: user.id, username: user.username });
-      await ctx.reply('Your confession has been submitted for review.');
+      await ctx.reply(getSetting('msg_submitted') || 'Your confession has been submitted for review.');
     } else {
       const num = approveConfession(id, 'auto');
       try {
-        await bot.api.sendMessage(config.CHANNEL_ID, `#${num}\n\n${text}`);
+        await bot.api.sendMessage(config.CHANNEL_ID, getChannelText(num, text));
       } catch (e) {
         console.error('Failed to post to channel:', e.message);
       }
@@ -38,7 +56,7 @@ export function setupConfessionHandler(bot, broadcast) {
         await bot.api.sendMessage(config.MOD_GROUP_ID, `✅ #${num} Auto-posted\n\n${text}\n\n👤 ${user.first_name || ''}${user.username ? ' @' + user.username : ''}\n🆔 ${user.id}`);
       } catch {}
       broadcast('new_confession', { id, type: 'text', content: text, user_id: user.id, username: user.username, auto: true });
-      await ctx.reply(`Your confession #${num} has been posted!`);
+      await ctx.reply(getPostedReply(num));
     }
   });
 
@@ -46,7 +64,7 @@ export function setupConfessionHandler(bot, broadcast) {
     if (ctx.chat.type !== 'private') return;
 
     if (getSetting('bot_active') === 'false') {
-      return ctx.reply('Confessions are currently paused. Please try again later.');
+      return ctx.reply(getSetting('msg_paused') || 'Confessions are currently paused.');
     }
 
     const user = ctx.from;
@@ -68,12 +86,12 @@ export function setupConfessionHandler(bot, broadcast) {
         console.error('Failed to send photo to mod group:', e.message);
       }
       broadcast('new_confession', { id, type: 'photo', content: caption, user_id: user.id, username: user.username });
-      await ctx.reply('Your confession has been submitted for review.');
+      await ctx.reply(getSetting('msg_submitted') || 'Your confession has been submitted for review.');
     } else {
       const num = approveConfession(id, 'auto');
       try {
         await bot.api.sendPhoto(config.CHANNEL_ID, fileId, {
-          caption: `#${num}\n\n${caption}`,
+          caption: getChannelText(num, caption),
         });
       } catch (e) {
         console.error('Failed to post photo to channel:', e.message);
@@ -84,7 +102,7 @@ export function setupConfessionHandler(bot, broadcast) {
         });
       } catch {}
       broadcast('new_confession', { id, type: 'photo', content: caption, user_id: user.id, username: user.username, auto: true });
-      await ctx.reply(`Your confession #${num} has been posted!`);
+      await ctx.reply(getPostedReply(num));
     }
   });
 }

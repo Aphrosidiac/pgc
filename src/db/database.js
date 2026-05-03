@@ -61,6 +61,14 @@ export function initDb() {
     INSERT OR IGNORE INTO settings (key, value) VALUES ('next_confession_number', '1');
     INSERT OR IGNORE INTO settings (key, value) VALUES ('bot_active', 'true');
     INSERT OR IGNORE INTO settings (key, value) VALUES ('moderation_enabled', 'false');
+    INSERT OR IGNORE INTO settings (key, value) VALUES ('msg_start', 'You can start confessing to Pagoh Confess. Simply write your confession and it will be sent automatically. Photos confessions are also supported. Just dont be too extreme. Wait 5 seconds before sending each messages to avoid spam');
+    INSERT OR IGNORE INTO settings (key, value) VALUES ('msg_spam', 'jangan spam pls');
+    INSERT OR IGNORE INTO settings (key, value) VALUES ('msg_banned', 'YOURE BANNED DUMBASS LMFAOO LOOSER ASS BITCH');
+    INSERT OR IGNORE INTO settings (key, value) VALUES ('msg_wordfilter', 'banned words detected');
+    INSERT OR IGNORE INTO settings (key, value) VALUES ('msg_paused', 'Confessions are currently paused. Please try again later.');
+    INSERT OR IGNORE INTO settings (key, value) VALUES ('msg_submitted', 'Your confession has been submitted for review.');
+    INSERT OR IGNORE INTO settings (key, value) VALUES ('msg_posted', 'Your confession #{{number}} has been posted!');
+    INSERT OR IGNORE INTO settings (key, value) VALUES ('msg_channel_format', '#{{number}}\n\n{{content}}');
     INSERT OR IGNORE INTO banned_words (word) VALUES ('bodo');
   `);
 

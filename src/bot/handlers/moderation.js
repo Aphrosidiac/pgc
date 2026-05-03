@@ -1,8 +1,13 @@
 import config from '../../config.js';
-import { getConfession, approveConfession, rejectConfession, banUser } from '../../db/queries.js';
+import { getConfession, approveConfession, rejectConfession, banUser, getSetting } from '../../db/queries.js';
 
 function isAdmin(ctx) {
   return config.ADMIN_IDS.includes(ctx.from?.id);
+}
+
+function getChannelText(num, content) {
+  const fmt = getSetting('msg_channel_format') || '#{{number}}\n\n{{content}}';
+  return fmt.replaceAll('{{number}}', num).replaceAll('{{content}}', content);
 }
 
 export function setupModerationHandler(bot, broadcast) {
@@ -19,10 +24,10 @@ export function setupModerationHandler(bot, broadcast) {
     try {
       if (confession.type === 'photo') {
         await bot.api.sendPhoto(config.CHANNEL_ID, confession.file_id, {
-          caption: `#${num}\n\n${confession.content || ''}`,
+          caption: getChannelText(num, confession.content || ''),
         });
       } else {
-        await bot.api.sendMessage(config.CHANNEL_ID, `#${num}\n\n${confession.content}`);
+        await bot.api.sendMessage(config.CHANNEL_ID, getChannelText(num, confession.content));
       }
     } catch (e) {
       console.error('Failed to post to channel:', e.message);

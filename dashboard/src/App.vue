@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { Inbox, ListOrdered, Users, Filter, BarChart3, ScrollText, LogOut } from 'lucide-vue-next'
+import { Inbox, ListOrdered, Users, Filter, BarChart3, ScrollText, GitBranch, LogOut } from 'lucide-vue-next'
 import api from './api.js'
 
 const router = useRouter()
@@ -13,6 +13,7 @@ const nav = [
   { path: '/feed', label: 'Feed', icon: ListOrdered },
   { path: '/users', label: 'Users', icon: Users },
   { path: '/filters', label: 'Filters', icon: Filter },
+  { path: '/workflow', label: 'Flow', icon: GitBranch },
   { path: '/stats', label: 'Stats', icon: BarChart3 },
   { path: '/logs', label: 'Logs', icon: ScrollText },
 ]

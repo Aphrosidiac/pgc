@@ -74,6 +74,6 @@ export function setupAdminHandler(bot) {
 
   bot.command('start', async (ctx) => {
     if (ctx.chat.type !== 'private') return;
-    await ctx.reply('You can start confessing to Pagoh Confess. Simply write your confession and it will be sent automatically. Photos confessions are also supported. Just dont be too extreme. Wait 5 seconds before sending each messages to avoid spam');
+    await ctx.reply(getSetting('msg_start') || 'Send me your confession and it will be posted anonymously.');
   });
 }
