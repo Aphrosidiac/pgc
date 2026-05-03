@@ -6,7 +6,7 @@ export function wordFilterMiddleware(ctx, next) {
 
   const matched = checkBannedWords(text);
   if (matched) {
-    return ctx.reply('Your message contains a banned word and cannot be submitted.');
+    return ctx.reply('banned words detected');
   }
   return next();
 }
