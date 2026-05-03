@@ -27,23 +27,31 @@ const totalPages = () => Math.ceil(total.value / 50)
 
 <template>
   <div>
-    <h2 class="text-2xl font-semibold mb-6">Activity Log</h2>
+    <h2 class="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">Activity Log</h2>
 
     <div v-if="!logs.length" class="text-text-muted text-sm py-12 text-center">No activity yet</div>
 
     <div v-else class="space-y-2">
-      <div v-for="log in logs" :key="log.id" class="bg-surface border border-border rounded-lg px-4 py-3 flex items-center gap-4">
-        <span :class="actionColor(log.action)" class="text-xs px-2 py-0.5 rounded capitalize w-20 text-center shrink-0">{{ log.action }}</span>
-        <span class="text-sm flex-1">{{ log.details || `#${log.target_id}` }}</span>
-        <span class="text-xs text-text-muted">{{ log.actor }}</span>
-        <span class="text-xs text-text-muted w-36 text-right">{{ new Date(log.created_at).toLocaleString() }}</span>
+      <div v-for="log in logs" :key="log.id" class="bg-surface border border-border rounded-lg px-3 sm:px-4 py-3">
+        <div class="flex items-start sm:items-center gap-3">
+          <span :class="actionColor(log.action)" class="text-xs px-2 py-0.5 rounded capitalize shrink-0">{{ log.action }}</span>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm truncate">{{ log.details || `#${log.target_id}` }}</p>
+            <div class="flex items-center gap-2 mt-1 sm:hidden">
+              <span class="text-xs text-text-muted">{{ log.actor }}</span>
+              <span class="text-xs text-text-muted">{{ new Date(log.created_at).toLocaleDateString() }}</span>
+            </div>
+          </div>
+          <span class="hidden sm:inline text-xs text-text-muted shrink-0">{{ log.actor }}</span>
+          <span class="hidden sm:inline text-xs text-text-muted shrink-0">{{ new Date(log.created_at).toLocaleString() }}</span>
+        </div>
       </div>
     </div>
 
     <div v-if="totalPages() > 1" class="flex items-center justify-center gap-2 mt-6">
-      <button @click="page--; load()" :disabled="page <= 1" class="px-3 py-1.5 rounded-lg bg-surface border border-border text-sm disabled:opacity-30">Prev</button>
+      <button @click="page--; load()" :disabled="page <= 1" class="px-4 py-2 rounded-lg bg-surface border border-border text-sm disabled:opacity-30 active:scale-[0.97]">Prev</button>
       <span class="text-sm text-text-muted">{{ page }} / {{ totalPages() }}</span>
-      <button @click="page++; load()" :disabled="page >= totalPages()" class="px-3 py-1.5 rounded-lg bg-surface border border-border text-sm disabled:opacity-30">Next</button>
+      <button @click="page++; load()" :disabled="page >= totalPages()" class="px-4 py-2 rounded-lg bg-surface border border-border text-sm disabled:opacity-30 active:scale-[0.97]">Next</button>
     </div>
   </div>
 </template>

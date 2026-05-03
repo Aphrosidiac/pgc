@@ -72,23 +72,23 @@ onUnmounted(() => { sse?.close() })
 
 <template>
   <div>
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
       <div>
-        <h2 class="text-2xl font-semibold">Moderation Queue</h2>
+        <h2 class="text-xl sm:text-2xl font-semibold">Moderation Queue</h2>
         <p class="text-text-muted text-sm mt-1">
           <template v-if="modEnabled">{{ confessions.length }} pending</template>
-          <template v-else>Auto-posting enabled — confessions go straight to channel</template>
+          <template v-else>Auto-posting — straight to channel</template>
         </p>
       </div>
       <div class="flex gap-2">
         <button @click="toggleModeration"
-          class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          class="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors active:scale-[0.97]"
           :class="modEnabled ? 'bg-primary/15 text-primary-hover hover:bg-primary/25' : 'bg-surface border border-border text-text-muted hover:bg-surface-hover'">
           <Shield :size="16" />
           Review {{ modEnabled ? 'ON' : 'OFF' }}
         </button>
         <button @click="toggleBot"
-          class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          class="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors active:scale-[0.97]"
           :class="botActive ? 'bg-success/15 text-success hover:bg-success/25' : 'bg-danger/15 text-danger hover:bg-danger/25'">
           <Power :size="16" />
           Bot {{ botActive ? 'ON' : 'OFF' }}
@@ -96,7 +96,7 @@ onUnmounted(() => { sse?.close() })
       </div>
     </div>
 
-    <div v-if="!modEnabled" class="bg-surface border border-border rounded-xl p-8 text-center">
+    <div v-if="!modEnabled" class="bg-surface border border-border rounded-xl p-6 sm:p-8 text-center">
       <p class="text-text-muted text-sm">Moderation is off. All confessions are auto-posted to the channel.</p>
       <p class="text-text-muted text-sm mt-2">Turn on <span class="text-primary-hover font-medium">Review</span> to manually approve confessions before they go live.</p>
     </div>
@@ -107,23 +107,21 @@ onUnmounted(() => { sse?.close() })
 
       <div v-else class="space-y-3">
         <div v-for="c in confessions" :key="c.id" class="bg-surface border border-border rounded-xl p-4">
-          <div class="flex items-start justify-between gap-4">
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="text-xs font-mono text-text-muted">#{{ c.id }}</span>
-                <span v-if="c.type === 'photo'" class="text-xs bg-primary/15 text-primary-hover px-2 py-0.5 rounded">Photo</span>
-              </div>
-              <p class="text-sm whitespace-pre-wrap break-words">{{ c.content || '(no text)' }}</p>
-              <p class="text-xs text-text-muted mt-2">{{ c.username ? '@' + c.username : 'ID: ' + c.user_id }}</p>
-            </div>
-            <div class="flex gap-2 shrink-0">
-              <button @click="approve(c.id)" class="p-2 rounded-lg bg-success/15 text-success hover:bg-success/25 transition-colors" title="Approve">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xs font-mono text-text-muted">#{{ c.id }}</span>
+            <span v-if="c.type === 'photo'" class="text-xs bg-primary/15 text-primary-hover px-2 py-0.5 rounded">Photo</span>
+          </div>
+          <p class="text-sm whitespace-pre-wrap break-words mb-2">{{ c.content || '(no text)' }}</p>
+          <div class="flex items-center justify-between">
+            <p class="text-xs text-text-muted">{{ c.username ? '@' + c.username : 'ID: ' + c.user_id }}</p>
+            <div class="flex gap-2">
+              <button @click="approve(c.id)" class="p-2.5 rounded-lg bg-success/15 text-success hover:bg-success/25 active:scale-[0.93] transition-all" title="Approve">
                 <Check :size="18" />
               </button>
-              <button @click="reject(c.id)" class="p-2 rounded-lg bg-danger/15 text-danger hover:bg-danger/25 transition-colors" title="Reject">
+              <button @click="reject(c.id)" class="p-2.5 rounded-lg bg-danger/15 text-danger hover:bg-danger/25 active:scale-[0.93] transition-all" title="Reject">
                 <X :size="18" />
               </button>
-              <button @click="ban(c.id)" class="p-2 rounded-lg bg-warning/15 text-warning hover:bg-warning/25 transition-colors" title="Ban User">
+              <button @click="ban(c.id)" class="p-2.5 rounded-lg bg-warning/15 text-warning hover:bg-warning/25 active:scale-[0.93] transition-all" title="Ban User">
                 <Ban :size="18" />
               </button>
             </div>

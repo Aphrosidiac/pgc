@@ -37,8 +37,9 @@ async function logout() {
   <div v-if="route.path === '/login'">
     <router-view />
   </div>
-  <div v-else class="flex h-screen">
-    <aside class="w-56 bg-surface border-r border-border flex flex-col">
+  <div v-else class="flex flex-col md:flex-row h-screen">
+    <!-- Desktop sidebar -->
+    <aside class="hidden md:flex w-56 bg-surface border-r border-border flex-col shrink-0">
       <div class="p-5 border-b border-border">
         <h1 class="text-lg font-semibold">Pagoh Confess</h1>
         <p class="text-xs text-text-muted mt-0.5">Admin Dashboard</p>
@@ -62,8 +63,34 @@ async function logout() {
         </button>
       </div>
     </aside>
-    <main class="flex-1 overflow-y-auto p-6">
+
+    <!-- Main content -->
+    <main class="flex-1 overflow-y-auto p-4 md:p-6 pb-20 md:pb-6">
       <router-view />
     </main>
+
+    <!-- Mobile bottom nav -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-border flex items-center justify-around px-1 py-1 z-50 safe-bottom">
+      <router-link
+        v-for="item in nav"
+        :key="item.path"
+        :to="item.path"
+        class="flex flex-col items-center gap-0.5 px-2 py-2 rounded-lg text-[11px] min-w-[3rem] transition-colors"
+        :class="route.path === item.path ? 'text-primary-hover' : 'text-text-muted'"
+      >
+        <component :is="item.icon" :size="20" />
+        {{ item.label }}
+      </router-link>
+      <button @click="logout" class="flex flex-col items-center gap-0.5 px-2 py-2 rounded-lg text-[11px] min-w-[3rem] text-text-muted">
+        <LogOut :size="20" />
+        Out
+      </button>
+    </nav>
   </div>
 </template>
+
+<style scoped>
+.safe-bottom {
+  padding-bottom: max(0.25rem, env(safe-area-inset-bottom));
+}
+</style>
